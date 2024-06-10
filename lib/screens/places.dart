@@ -1,9 +1,9 @@
-import 'package:favorite_places_app/providers/user_places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:favorite_places_app/widgets/places_list.dart';
 import 'package:favorite_places_app/screens/add_place.dart';
+import 'package:favorite_places_app/widgets/places_list.dart';
+import 'package:favorite_places_app/providers/user_places.dart';
 
 class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
@@ -29,7 +29,7 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your places'),
+        title: const Text('Your Places'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -47,11 +47,12 @@ class _PlacesScreenState extends ConsumerState<PlacesScreen> {
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
           future: _placesFuture,
-          builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting
-              ? const Center(child: CircularProgressIndicator())
-              : PlacesList(
-                  places: userPlaces,
-                ),
+          builder: (context, snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(child: CircularProgressIndicator())
+                  : PlacesList(
+                      places: userPlaces,
+                    ),
         ),
       ),
     );

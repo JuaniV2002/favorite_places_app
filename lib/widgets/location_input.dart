@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:favorite_places_app/models/place.dart';
 import 'package:favorite_places_app/screens/map.dart';
+import 'package:favorite_places_app/models/place.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.onSelectLocation});
 
-  final void Function(PlaceLocation) onSelectLocation;
+  final void Function(PlaceLocation location) onSelectLocation;
 
   @override
   State<LocationInput> createState() {
@@ -29,30 +29,20 @@ class _LocationInputState extends State<LocationInput> {
     }
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyBhanenYpqY1_KqhQU3Ua-jf9s-FGlsJFc';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyDLcwxUggpPZo8lcbH0TB4Crq5SJjtj4ag';
   }
 
-  Future<void> _savePlace(double lat, double lng) async {
+  Future<void> _savePlace(double latitude, double longitude) async {
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBhanenYpqY1_KqhQU3Ua-jf9s-FGlsJFc');
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyDLcwxUggpPZo8lcbH0TB4Crq5SJjtj4ag');
     final response = await http.get(url);
     final resData = json.decode(response.body);
-
-    if (resData['results'].isEmpty) {
-      setState(() {
-        _isGettingLocation = false;
-      });
-      // Opcional: Muestra un mensaje de error o un diálogo
-      print('No se encontró ninguna dirección para las coordenadas proporcionadas.');
-      return;
-    }
-
     final address = resData['results'][0]['formatted_address'];
 
     setState(() {
       _pickedLocation = PlaceLocation(
-        latitude: lat,
-        longitude: lng,
+        latitude: latitude,
+        longitude: longitude,
         address: address,
       );
       _isGettingLocation = false;
@@ -93,11 +83,6 @@ class _LocationInputState extends State<LocationInput> {
     final lng = locationData.longitude;
 
     if (lat == null || lng == null) {
-      setState(() {
-        _isGettingLocation = false;
-      });
-      // Opcional: Muestra un mensaje de error o un diálogo
-      print('No se pudo obtener la ubicación.');
       return;
     }
 
@@ -159,12 +144,12 @@ class _LocationInputState extends State<LocationInput> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton.icon(
-              icon: const Icon(Icons.location_on_sharp),
+              icon: const Icon(Icons.location_on),
               label: const Text('Get Current Location'),
               onPressed: _getCurrentLocation,
             ),
             TextButton.icon(
-              icon: const Icon(Icons.map_rounded),
+              icon: const Icon(Icons.map),
               label: const Text('Select on Map'),
               onPressed: _selectOnMap,
             ),
