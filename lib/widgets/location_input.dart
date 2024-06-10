@@ -29,7 +29,7 @@ class _LocationInputState extends State<LocationInput> {
     }
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyBhanenYpqY1_KqhQU3Ua-jf9s-FGlsJFc';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyBhanenYpqY1_KqhQU3Ua-jf9s-FGlsJFc';
   }
 
   Future<void> _savePlace(double lat, double lng) async {
@@ -37,6 +37,16 @@ class _LocationInputState extends State<LocationInput> {
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBhanenYpqY1_KqhQU3Ua-jf9s-FGlsJFc');
     final response = await http.get(url);
     final resData = json.decode(response.body);
+
+    if (resData['results'].isEmpty) {
+      setState(() {
+        _isGettingLocation = false;
+      });
+      // Opcional: Muestra un mensaje de error o un diálogo
+      print('No se encontró ninguna dirección para las coordenadas proporcionadas.');
+      return;
+    }
+
     final address = resData['results'][0]['formatted_address'];
 
     setState(() {
@@ -83,6 +93,11 @@ class _LocationInputState extends State<LocationInput> {
     final lng = locationData.longitude;
 
     if (lat == null || lng == null) {
+      setState(() {
+        _isGettingLocation = false;
+      });
+      // Opcional: Muestra un mensaje de error o un diálogo
+      print('No se pudo obtener la ubicación.');
       return;
     }
 
@@ -92,7 +107,7 @@ class _LocationInputState extends State<LocationInput> {
   void _selectOnMap() async {
     final pickedLocation = await Navigator.of(context).push<LatLng>(
       MaterialPageRoute(
-        builder: ((ctx) => const MapScreen()),
+        builder: (ctx) => const MapScreen(),
       ),
     );
 
