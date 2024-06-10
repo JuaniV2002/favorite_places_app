@@ -2,6 +2,10 @@
 
 This Flutter app will allow you to take a title of a cool place you have bee, a photo of that place and also its location. You can then see all the places you have visited in a map and see the details of each place.
 
+## Important note
+
+For this project, I have used native device features, like the camera and the device's location. Please check this [link](https://pub.dev/packages/google_maps_flutter) to set up Google Maps and this [link](https://pub.dev/packages/image_picker#ios) to set up the image picker.
+
 ## Key Features
 
 - **Add a title**: add a title to the place you want to save.
